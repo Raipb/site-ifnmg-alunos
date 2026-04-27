@@ -3,10 +3,9 @@ import { MapPin, Clock, ExternalLink } from 'lucide-react';
 
 export function CampusPage() {
   const campusInfo = {
-    endereco: 'Av. Dr. David Sette, 65 - Santo Antônio, Salinas - MG, 39560-000',
-    horario: 'Segunda a Sexta: 7h às 22h',
-    horarioSabado: 'Sábado: 7h às 12h',
-    mapsUrl: 'https://maps.google.com/?q=IFNMG+Campus+Salinas',
+    endereco: 'Rodovia BR 367, Km 07, s/n - Zona Rural, Almenara - MG, 39900-000',
+    horario: 'Segunda a Sexta: 7h às 22h30',
+    mapsUrl: 'https://maps.app.goo.gl/iCygVeheDzCg24YN7',
   };
 
   return (
@@ -39,14 +38,10 @@ export function CampusPage() {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Segunda a Sexta</span>
-                  <span className="text-gray-900">7h às 22h</span>
+                  <span className="text-gray-900">7h às 22h30</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Sábado</span>
-                  <span className="text-gray-900">7h às 12h</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Domingo</span>
+                  <span className="text-gray-600">Sábabo e Domingo</span>
                   <span className="text-gray-900">Fechado</span>
                 </div>
               </div>
@@ -56,12 +51,15 @@ export function CampusPage() {
 
         <Card>
           <h3 className="mb-3">Mapa do Campus</h3>
-          <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
-            <div className="text-center text-gray-500">
-              <MapPin size={48} className="mx-auto mb-2 text-gray-400" />
-              <p>Visualização do mapa</p>
-              <p className="text-sm mt-1">Clique no botão acima para ver no Google Maps</p>
-            </div>
+
+          <div className="aspect-video rounded-lg overflow-hidden border border-gray-200">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3466.7017262556496!2d-40.743318099999996!3d-16.229171499999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x74bd828dfcfa4e7%3A0xc3c01777194ad93!2sIFNMG%20-%20Campus%20Almenara!5e1!3m2!1spt-BR!2sbr!4v1777312465156!5m2!1spt-BR!2sbr"
+              className="w-full h-full border-0"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </Card>
 
@@ -69,7 +67,7 @@ export function CampusPage() {
           <h3 className="mb-3">Como Chegar</h3>
           <div className="space-y-3 text-sm text-gray-700">
             <p>
-              <strong>De ônibus:</strong> Linhas que passam próximo ao campus: Linha Centro, Linha Bairro Santo Antônio
+              <strong>De ônibus:</strong> Linhas que passam próximo ao campus
             </p>
             <p>
               <strong>De carro:</strong> Estacionamento disponível para alunos e visitantes
