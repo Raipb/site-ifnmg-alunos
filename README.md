@@ -1,16 +1,66 @@
-# React + Vite
+# IFNMG Guia para Novos Alunos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Projeto desenvolvido para a disciplina de Gestão de Projetos de Software, com o objetivo de ajudar alunos novos do IFNMG a entender melhor o funcionamento do campus.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Sobre o Projeto
 
-## React Compiler
+Este projeto consiste na criação de um site simples e acessível, contendo informações essenciais para alunos ingressantes, como:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 📍 Localização de setores
+- 🕒 Horários de funcionamento
+- 📚 Cursos oferecidos
+- 📞 Contatos importantes
 
-## Expanding the ESLint configuration
+A proposta é facilitar a adaptação dos alunos ao ambiente acadêmico, reduzindo dúvidas comuns no início.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Objetivo
+
+Desenvolver um site simples que auxilie alunos novos a compreender o funcionamento do IFNMG e acessar informações básicas de forma rápida e organizada.
+
+---
+
+## Solução (MVP)
+
+Um site leve e intuitivo com as principais informações do campus, acessível tanto pelo celular quanto pelo computador.
+
+---
+
+## Tecnologias
+
+...
+
+---
+
+## Equipe
+
+- Raí 
+- Luis Felipe 
+- Pedro Giovani 
+
+---
+
+## Status do Projeto
+
+Em desenvolvimento (MVP)
+
+---
+
+## Demonstração
+
+...
+
+---
+
+## Link do Projeto
+
+...
+
+---
+
+## Observações
+
+Este projeto foi desenvolvido com foco em simplicidade e entrega de valor, seguindo o conceito de MVP (Produto Mínimo Viável).
