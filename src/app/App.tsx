@@ -10,19 +10,21 @@ import { HorariosPage } from './pages/HorariosPage';
 import { CursosPage } from './pages/CursosPage';
 import { EditaisPage } from './pages/EditaisPage';
 import { BolsasPage } from './pages/BolsasPage';
+import { AdminPage } from "./pages/AdminPage";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [showSearch, setShowSearch] = useState(false);
 
   const pageConfig = {
-    home: { title: 'Guia do Ingressante', showBack: false },
-    campus: { title: 'Campus', showBack: true },
-    contatos: { title: 'Quem Procurar', showBack: true },
-    horarios: { title: 'Horários', showBack: true },
-    cursos: { title: 'Cursos', showBack: true },
-    editais: { title: 'Editais', showBack: true },
-    bolsas: { title: 'Bolsas e Auxílios', showBack: true },
+    home: { title: "Guia do Ingressante", showBack: false },
+    campus: { title: "Campus", showBack: true },
+    contatos: { title: "Quem Procurar", showBack: true },
+    horarios: { title: "Horários", showBack: true },
+    cursos: { title: "Cursos", showBack: true },
+    editais: { title: "Editais", showBack: true },
+    bolsas: { title: "Bolsas e Auxílios", showBack: true },
+    admin: { title: "Painel Administrativo", showBack: true },
   };
 
   const config = pageConfig[currentPage as keyof typeof pageConfig];
@@ -39,22 +41,34 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
-        return <HomePage onNavigate={handleNavigate} onSearchOpen={() => setShowSearch(true)} />;
-      case 'campus':
+      case "home":
+        return (
+          <HomePage
+            onNavigate={handleNavigate}
+            onSearchOpen={() => setShowSearch(true)}
+          />
+        );
+      case "campus":
         return <CampusPage />;
-      case 'contatos':
+      case "contatos":
         return <ContatosPage />;
-      case 'horarios':
+      case "horarios":
         return <HorariosPage />;
-      case 'cursos':
+      case "cursos":
         return <CursosPage />;
-      case 'editais':
+      case "editais":
         return <EditaisPage />;
-      case 'bolsas':
+      case "bolsas":
         return <BolsasPage />;
+      case "admin":
+        return <AdminPage />;
       default:
-        return <HomePage onNavigate={handleNavigate} onSearchOpen={() => setShowSearch(true)} />;
+        return (
+          <HomePage
+            onNavigate={handleNavigate}
+            onSearchOpen={() => setShowSearch(true)}
+          />
+        );
     }
   };
 
