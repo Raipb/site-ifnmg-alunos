@@ -78,6 +78,7 @@ export default function App() {
         title={config.title}
         onBack={config.showBack ? () => handleNavigate('home') : undefined}
         onSearch={currentPage === 'home' ? () => setShowSearch(true) : undefined}
+        onAdmin={currentPage !== 'admin' ? () => handleNavigate('admin') : undefined}
       />
 
       <main className="min-h-[calc(100vh-64px)]">

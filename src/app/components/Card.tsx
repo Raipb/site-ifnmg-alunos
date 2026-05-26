@@ -7,9 +7,11 @@ interface CardProps {
 }
 
 export function Card({ children, onClick, className = '' }: CardProps) {
-  const baseClasses = "bg-white rounded-xl shadow-sm border border-gray-200 p-4 transition-all";
-  const interactiveClasses = onClick ? "cursor-pointer hover:shadow-md hover:border-[#2E7D32]/30 active:scale-[0.98]" : "";
-
+  const baseClasses =
+    "bg-white rounded-2xl shadow-sm border border-gray-100 p-5 transition-all duration-300";
+  const interactiveClasses = onClick
+    ? "cursor-pointer hover:shadow-xl hover:-translate-y-1 hover:border-[#2E7D32]/20 active:scale-[0.98]"
+    : "";
   return (
     <div
       className={`${baseClasses} ${interactiveClasses} ${className}`}
