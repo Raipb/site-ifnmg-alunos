@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 
 const avisos = require("../data/avisos");
 
@@ -7,7 +8,7 @@ router.get("/", (req, res) => {
   res.json(avisos);
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", authMiddleware, (req, res) => {
   const id = Number(req.params.id);
 
   const index = avisos.findIndex((aviso) => aviso.id === id);
@@ -25,7 +26,7 @@ router.delete("/:id", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", authMiddleware, (req, res) => {
   const { title, description, type } = req.body;
 
   const novoAviso = {
@@ -40,7 +41,7 @@ router.post("/", (req, res) => {
   res.status(201).json(novoAviso);
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", authMiddleware, (req, res) => {
   const id = Number(req.params.id);
 
   const { title, description, type } = req.body;

@@ -46,11 +46,14 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log("Botão Entrar clicado")
         const errs = validate();
+        console.log("Erros:", errs);
         if (Object.keys(errs).length > 0) {
             setErrors(errs);
             return;
         }
+        console.log("Passou da validação");
         setLoading(true);
         // setErrors({});
         // try {
@@ -77,8 +80,44 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
         //     setLoading(false);
         // }
 
-        onLoginSuccess();
-        setLoading(false);
+        setErrors({});
+
+        console.log("Vou chamar a API");
+
+        try {
+            const response = await fetch("http://localhost:3000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: form.email,
+                    senha: form.password,
+                }),
+            });
+
+            console.log("Status:", response.status);
+
+            const data = await response.json();
+            console.log("RESPOSTA LOGIN:", data);
+
+            if (!response.ok) {
+                setErrors({
+                    general: data.error || "E-mail ou senha incorretos.",
+                });
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+
+            onLoginSuccess();
+        } catch {
+            setErrors({
+                general: "Erro de conexão com o servidor",
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

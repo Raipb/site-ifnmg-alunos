@@ -1,6 +1,8 @@
 import { BookOpen, FileText, Folder, Megaphone, Menu, Users, Wallet, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const getToken = () => localStorage.getItem("token");
+
 interface Aviso {
   id: number;
   title: string;
@@ -17,16 +19,23 @@ export function AdminPage() {
   const [section, setSection] = useState("avisos");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const fetchAvisos =  async () => {
+    const response = await fetch("http://localhost:3000/avisos");
+    const data = await response.json();
+    setAvisos(data);
+  };
+
   useEffect(() => {
-    fetch("http://localhost:3000/avisos")
-      .then((res) => res.json())
-      .then((data) => setAvisos(data));
+    fetchAvisos();
   }, []);
 
   const handleDelete = async (id: number) => {
     try {
       await fetch(`http://localhost:3000/avisos/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
       });
 
       setAvisos((prev) => prev.filter((aviso) => aviso.id !== id));
@@ -36,6 +45,14 @@ export function AdminPage() {
   };
 
   const handleCreate = async () => {
+    const token = localStorage.getItem("token");
+    console.log("TOKEN:", token);
+
+    if (!token) {
+      console.log("Usuário não logado - sem token!");
+      return;
+    }
+
     if (!title || !description) return;
 
     try {
@@ -46,6 +63,7 @@ export function AdminPage() {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
               title,
@@ -57,11 +75,6 @@ export function AdminPage() {
 
         const avisoAtualizado = await response.json();
 
-        setAvisos((prev) =>
-          prev.map((aviso) =>
-            aviso.id === editingId ? avisoAtualizado : aviso,
-          ),
-        );
 
         setEditingId(null);
       } else {
@@ -69,6 +82,7 @@ export function AdminPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`
           },
           body: JSON.stringify({
             title,
@@ -79,7 +93,6 @@ export function AdminPage() {
 
         const novoAviso = await response.json();
 
-        setAvisos((prev) => [...prev, novoAviso]);
       }
 
       setTitle("");
@@ -88,6 +101,8 @@ export function AdminPage() {
     } catch (error) {
       console.log(error);
     }
+
+    await fetchAvisos();
   };
 
   const handleEdit = (aviso: Aviso) => {
