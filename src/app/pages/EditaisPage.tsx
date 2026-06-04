@@ -1,49 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { FileText, ExternalLink, Calendar, Search } from 'lucide-react';
 
+interface Edital {
+  id: number;
+  titulo: string;
+  descricao: string;
+  data: string;
+  status: string;
+  link: string;
+}
+
 export function EditaisPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todos');
+  const [editais, setEditais] = useState<Edital[]>([]);
 
-  const editais = [
-    {
-      titulo: 'Edital de Matrícula 2026/1',
-      data: '15/01/2026',
-      descricao: 'Processo de matrícula para novos alunos do primeiro semestre de 2026',
-      link: '#',
-      status: 'Aberto',
-    },
-    {
-      titulo: 'Edital de Transferência Interna',
-      data: '20/01/2026',
-      descricao: 'Processo seletivo para transferência entre cursos do campus',
-      link: '#',
-      status: 'Aberto',
-    },
-    {
-      titulo: 'Edital de Monitoria',
-      data: '10/02/2026',
-      descricao: 'Seleção de monitores para disciplinas do semestre 2026/1',
-      link: '#',
-      status: 'Em breve',
-    },
-    {
-      titulo: 'Edital PIBIC - Iniciação Científica',
-      data: '01/03/2026',
-      descricao: 'Programa Institucional de Bolsas de Iniciação Científica',
-      link: '#',
-      status: 'Em breve',
-    },
-    {
-      titulo: 'Edital de Estágio Obrigatório',
-      data: '25/01/2026',
-      descricao: 'Processo de validação de estágios obrigatórios',
-      link: '#',
-      status: 'Aberto',
-    },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:3000/editais")
+      .then((res) => res.json())
+      .then((data) => setEditais(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -63,7 +42,7 @@ export function EditaisPage() {
   const filteredEditais = editais.filter((edital) => {
     const matchesFilter = selectedFilter === 'Todos' || edital.status === selectedFilter;
     const matchesSearch = edital.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          edital.descricao.toLowerCase().includes(searchTerm.toLowerCase());
+      edital.descricao.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -100,37 +79,37 @@ export function EditaisPage() {
               <p>Nenhum edital encontrado</p>
             </div>
           ) : (
-            filteredEditais.map((edital, index) => (
-          <Card key={index}>
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-2 flex-1">
-                  <FileText className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
-                  <div>
-                    <h3 className="mb-1">{edital.titulo}</h3>
-                    <p className="text-sm text-gray-600">{edital.descricao}</p>
+            filteredEditais.map((edital) => (
+              <Card key={edital.id}>
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2 flex-1">
+                      <FileText className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
+                      <div>
+                        <h3 className="mb-1">{edital.titulo}</h3>
+                        <p className="text-sm text-gray-600">{edital.descricao}</p>
+                      </div>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(edital.status)}`}>
+                      {edital.status}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                      <Calendar size={16} />
+                      <span>{edital.data}</span>
+                    </div>
+                    <button
+                      onClick={() => window.open(edital.link, '_blank')}
+                      className="flex items-center gap-1 text-[#2E7D32] hover:text-[#25692a] transition-colors text-sm"
+                    >
+                      Ver edital
+                      <ExternalLink size={16} />
+                    </button>
                   </div>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(edital.status)}`}>
-                  {edital.status}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                <div className="flex items-center gap-1 text-sm text-gray-600">
-                  <Calendar size={16} />
-                  <span>{edital.data}</span>
-                </div>
-                <button
-                  onClick={() => window.open(edital.link, '_blank')}
-                  className="flex items-center gap-1 text-[#2E7D32] hover:text-[#25692a] transition-colors text-sm"
-                >
-                  Ver edital
-                  <ExternalLink size={16} />
-                </button>
-              </div>
-            </div>
-          </Card>
+              </Card>
             ))
           )}
         </div>
