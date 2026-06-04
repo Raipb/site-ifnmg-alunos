@@ -1,7 +1,8 @@
-import { BookOpen, FileText, Folder, Megaphone, Menu, Users, Wallet, X } from "lucide-react";
+import { BookOpen, CalendarDays, FileText, Folder, Megaphone, Menu, Users, Wallet, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EditaisSection } from "../components/admin/EditaisSection";
 import { AvisosSection } from "../components/admin/AvisosSection";
+import { HorariosSection } from "../components/admin/HorarioSection";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -181,14 +182,14 @@ export function AdminPage() {
             </button>
 
             <button
-              onClick={() => setSection("pdfs")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "pdfs"
+              onClick={() => setSection("horarios")}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "horarios"
                 ? "bg-green-50 text-green-700"
                 : "hover:bg-gray-100"
                 }`}
             >
-              <Folder size={18} />
-              PDFs
+              <CalendarDays size={18} />
+              Horários
             </button>
           </nav>
         </aside>
@@ -278,7 +279,7 @@ export function AdminPage() {
             {section === "contatos" && "Gerenciamento de Contatos"}
             {section === "bolsas" && "Gerenciamento de Bolsas"}
             {section === "editais" && "Gerenciamento de Editais"}
-            {section === "pdfs" && "Gerenciamento de PDFs"}
+            {section === "horarios" && "Gerenciamento de Horários e Calendário"}
           </h1>
           {section === "avisos" && (
             <AvisosSection
@@ -326,14 +327,7 @@ export function AdminPage() {
 
           {section === "editais" && <EditaisSection />}
 
-          {section === "pdfs" && (
-            <div className="bg-white p-8 rounded-xl shadow border">
-              <h2 className="text-2xl font-bold">PDFs</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
-            </div>
-          )}
+          {section === "horarios" && <HorariosSection />}
         </main>
 
       </div>
