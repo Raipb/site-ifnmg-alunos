@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  url = env("DATABASE_URL")
 }
 
 model Aviso {
@@ -11,4 +12,13 @@ model Aviso {
   title       String
   description String
   type        String
+}
+
+model Edital {
+  id          Int    @id @default(autoincrement())
+  titulo      String
+  descricao   String
+  data        String
+  status      String
+  link        String
 }
