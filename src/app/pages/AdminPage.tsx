@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { EditaisSection } from "../components/admin/EditaisSection";
 import { AvisosSection } from "../components/admin/AvisosSection";
 import { HorariosSection } from "../components/admin/HorarioSection";
+import { ContatosSection } from "../components/admin/ContatosSection";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -11,6 +12,16 @@ interface Aviso {
   title: string;
   description: string;
   type: string;
+}
+
+interface Contato {
+  id: number;
+  nome: string;
+  funcao: string;
+  horario: string;
+  email: string;
+  telefone: string;
+  categoria: string;
 }
 
 export function AdminPage() {
@@ -22,14 +33,34 @@ export function AdminPage() {
   const [section, setSection] = useState("avisos");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const [contatos, setContatos] = useState<Contato[]>([]);
+
+  const [nome, setNome] = useState("");
+  const [funcao, setFuncao] = useState("");
+  const [horario, setHorario] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [categoria, setCategoria] = useState("");
+
+  const [editingContatoId, setEditingContatoId] = useState<number | null>(null);
+
   const fetchAvisos =  async () => {
     const response = await fetch("http://localhost:3000/avisos");
     const data = await response.json();
     setAvisos(data);
   };
 
+  const fetchContatos = async () => {
+    const response = await fetch("http://localhost:3000/contatos");
+
+    const data = await response.json();
+
+    setContatos(data);
+  };
+
   useEffect(() => {
     fetchAvisos();
+    fetchContatos();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -117,21 +148,89 @@ export function AdminPage() {
     setShowForm(true);
   };
 
+  const handleDeleteContato = async (id: number) => {
+    try {
+      await fetch(`http://localhost:3000/contatos/${id}`, {
+        method: "DELETE",
+      });
+
+      await fetchContatos();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEditContato = (contato: Contato) => {
+    setNome(contato.nome);
+    setFuncao(contato.funcao);
+    setHorario(contato.horario);
+    setEmail(contato.email);
+    setTelefone(contato.telefone);
+    setCategoria(contato.categoria);
+
+    setEditingContatoId(contato.id);
+    setShowForm(true);
+  };
+
+  const handleCreateContato = async () => {
+    try {
+      const body = {
+        nome,
+        funcao,
+        horario,
+        email,
+        telefone,
+        categoria,
+      };
+
+      if (editingContatoId) {
+        await fetch(`http://localhost:3000/contatos/${editingContatoId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+      } else {
+        await fetch("http://localhost:3000/contatos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+      }
+
+      setNome("");
+      setFuncao("");
+      setHorario("");
+      setEmail("");
+      setTelefone("");
+      setCategoria("");
+
+      setEditingContatoId(null);
+      setShowForm(false);
+
+      await fetchContatos();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="grid md:grid-cols-[250px_1fr] gap-6">
         <aside className="hidden md:block bg-white rounded-xl shadow border p-4 h-fit sticky top-24">
-          <h2 className="font-bold text-lg text-green-700 mb-6">
-            Admin IFNMG
-          </h2>
+          <h2 className="font-bold text-lg text-green-700 mb-6">Admin IFNMG</h2>
 
           <nav className="space-y-2">
             <button
               onClick={() => setSection("avisos")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "avisos"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "avisos"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <Megaphone size={18} />
               Avisos
@@ -139,10 +238,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("cursos")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "cursos"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "cursos"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <BookOpen size={18} />
               Cursos
@@ -150,10 +250,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("contatos")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "contatos"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "contatos"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <Users size={18} />
               Contatos
@@ -161,10 +262,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("bolsas")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "bolsas"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "bolsas"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <Wallet size={18} />
               Bolsas
@@ -172,10 +274,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("editais")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "editais"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "editais"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <FileText size={18} />
               Editais
@@ -183,10 +286,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("horarios")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "horarios"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "horarios"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <CalendarDays size={18} />
               Horários
@@ -206,7 +310,6 @@ export function AdminPage() {
           {menuOpen && (
             <div className="mt-3 bg-white rounded-xl shadow border p-3">
               <div className="flex flex-col gap-2">
-
                 <button
                   onClick={() => {
                     setSection("avisos");
@@ -266,7 +369,6 @@ export function AdminPage() {
                 >
                   PDFs
                 </button>
-
               </div>
             </div>
           )}
@@ -301,27 +403,39 @@ export function AdminPage() {
           {section === "cursos" && (
             <div className="bg-white p-8 rounded-xl shadow border">
               <h2 className="text-2xl font-bold">Cursos</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
+              <p className="text-gray-500 mt-2">Área em desenvolvimento.</p>
             </div>
           )}
 
           {section === "contatos" && (
-            <div className="bg-white p-8 rounded-xl shadow border">
-              <h2 className="text-2xl font-bold">Contatos</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
-            </div>
+            <ContatosSection
+              contatos={contatos}
+              nome={nome}
+              funcao={funcao}
+              horario={horario}
+              email={email}
+              telefone={telefone}
+              categoria={categoria}
+              showForm={showForm}
+              editingId={editingContatoId}
+              setNome={setNome}
+              setFuncao={setFuncao}
+              setHorario={setHorario}
+              setEmail={setEmail}
+              setTelefone={setTelefone}
+              setCategoria={setCategoria}
+              setShowForm={setShowForm}
+              setEditingId={setEditingContatoId}
+              handleCreate={handleCreateContato}
+              handleEdit={handleEditContato}
+              handleDelete={handleDeleteContato}
+            />
           )}
 
           {section === "bolsas" && (
             <div className="bg-white p-8 rounded-xl shadow border">
               <h2 className="text-2xl font-bold">Bolsas</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
+              <p className="text-gray-500 mt-2">Área em desenvolvimento.</p>
             </div>
           )}
 
@@ -329,7 +443,6 @@ export function AdminPage() {
 
           {section === "horarios" && <HorariosSection />}
         </main>
-
       </div>
     </div>
   );
