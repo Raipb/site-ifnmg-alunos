@@ -4,6 +4,7 @@ import { EditaisSection } from "../components/admin/EditaisSection";
 import { AvisosSection } from "../components/admin/AvisosSection";
 import { HorariosSection } from "../components/admin/HorarioSection";
 import { ContatosSection } from "../components/admin/ContatosSection";
+import { CursosSection } from "../components/admin/CursosSection";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -246,6 +247,7 @@ export function AdminPage() {
     setNivel(curso.nivel);
 
     setEditingCursoId(curso.id);
+    setShowForm(true);
   }
 
   const handleEdit = (aviso: Aviso) => {
@@ -510,111 +512,28 @@ export function AdminPage() {
           )}
 
           {section === "cursos" && (
-            <div className="bg-white p-8 rounded-xl shadow border">
-
-              <h2 className="text-2xl font-bold mb-4">
-                Cursos
-              </h2>
-
-              <input
-                type="text"
-                placeholder="Título"
-                value={tituloCurso}
-                onChange={(e) => setTituloCurso(e.target.value)}
-                className="border p-2 rounded w-full mb-2"
-              />
-
-              <input
-                type="text"
-                placeholder="Modalidade"
-                value={modalidadeCurso}
-                onChange={(e) => setModalidadeCurso(e.target.value)}
-                className="border p-2 rounded w-full mb-2"
-              />
-
-              <textarea
-                placeholder="Descrição"
-                value={descricaoCurso}
-                onChange={(e) => setDescricaoCurso(e.target.value)}
-                className="border p-2 rounded w-full mb-2"
-              />
-
-              <input
-                type="text"
-                placeholder="Duração"
-                value={duracaoCurso}
-                onChange={(e) => setDuracaoCurso(e.target.value)}
-                className="border p-2 rounded w-full mb-2"
-              />
-
-              <input
-                type="text"
-                placeholder="Horário"
-                value={horarioCurso}
-                onChange={(e) => setHorarioCurso(e.target.value)}
-                className="border p-2 rounded w-full mb-4"
-              />
-
-              <div>
-                <label className="block mb-1 font-medium">
-                  Nível
-                </label>
-
-                <select
-                  value={nivel}
-                  onChange={(e) => setNivel(e.target.value)}
-                  className="w-full border rounded-lg p-2"
-                >
-                  <option value="Técnico">Técnico</option>
-                  <option value="Superior">Superior</option>
-                </select>
-              </div>
-
-              <button
-                onClick={handleCreateCurso}
-                className="bg-green-600 text-white px-4 py-2 rounded"
-              >
-                Cadastrar Curso
-              </button>
-
-              <div className="mt-6">
-                {cursos.map((curso) => (
-                  <div
-                    key={curso.id}
-                    className="border rounded p-3 mb-3"
-                  >
-                    <h3 className="font-bold">
-                      {curso.titulo}
-                    </h3>
-
-                    <p>{curso.modalidade}</p>
-                    <p>{curso.descricao}</p>
-                    <p>{curso.duracao}</p>
-                    <p>{curso.horario}</p>
-                    <p>{curso.nivel}</p>
-
-                    <div className="flex gap-2 mt-3">
-                      <button
-                        onClick={() => handleEditCurso(curso)}
-                        className="bg-blue-600 text-white px-3 py-1 rounded"
-                      >
-                        Editar
-                      </button>
-
-                      <button
-                        onClick={() => handleDeleteCurso(curso.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded"
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <h2 className="text-2xl font-bold">Cursos</h2>
-              <p className="text-gray-500 mt-2">Área em desenvolvimento.</p>
-            </div>
+            <CursosSection
+              cursos={cursos}
+              tituloCurso={tituloCurso}
+              modalidadeCurso={modalidadeCurso}
+              descricaoCurso={descricaoCurso}
+              duracaoCurso={duracaoCurso}
+              horarioCurso={horarioCurso}
+              nivel={nivel}
+              showForm={showForm}
+              editingId={editingCursoId}
+              setTituloCurso={setTituloCurso}
+              setModalidadeCurso={setModalidadeCurso}
+              setDescricaoCurso={setDescricaoCurso}
+              setDuracaoCurso={setDuracaoCurso}
+              setHorarioCurso={setHorarioCurso}
+              setNivel={setNivel}
+              setShowForm={setShowForm}
+              setEditingId={setEditingCursoId}
+              handleCreate={handleCreateCurso}
+              handleEdit={handleEditCurso}
+              handleDelete={handleDeleteCurso}
+            />
           )}
 
           {section === "contatos" && (
