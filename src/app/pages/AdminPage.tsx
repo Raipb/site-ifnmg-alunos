@@ -12,6 +12,16 @@ interface Aviso {
   type: string;
 }
 
+interface Curso {
+  id: number;
+  titulo: string;
+  modalidade: string;
+  descricao: string;
+  duracao: string;
+  horario: string;
+  nivel: string;
+}
+
 export function AdminPage() {
   const [avisos, setAvisos] = useState<Aviso[]>([]);
   const [title, setTitle] = useState("");
@@ -21,14 +31,35 @@ export function AdminPage() {
   const [section, setSection] = useState("avisos");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const [cursos, setCursos] = useState<Curso[]>([]);
+
+  const [tituloCurso, setTituloCurso] = useState("");
+
+  const [modalidadeCurso, setModalidadeCurso] = useState("");
+  const [descricaoCurso, setDescricaoCurso] = useState("");
+  const [duracaoCurso, setDuracaoCurso] = useState("");
+  const [horarioCurso, setHorarioCurso] = useState("");
+  const [nivel, setNivel] = useState("Técnico");
+
+  const [editingCursoId, setEditingCursoId] = useState<number | null>(null);
+
   const fetchAvisos =  async () => {
     const response = await fetch("http://localhost:3000/avisos");
     const data = await response.json();
     setAvisos(data);
   };
 
+  const fetchCursos = async () => {
+    const response = await fetch("http://localhost:3000/cursos");
+
+    const data = await response.json();
+
+    setCursos(data);
+  };
+
   useEffect(() => {
     fetchAvisos();
+    fetchCursos();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -106,6 +137,84 @@ export function AdminPage() {
 
     await fetchAvisos();
   };
+
+  const handleCreateCurso = async () => {
+   try {
+      if (editingCursoId !== null) {
+        await fetch(`http://localhost:3000/cursos/${editingCursoId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            titulo: tituloCurso,
+            modalidade: modalidadeCurso,
+            descricao: descricaoCurso,
+            duracao: duracaoCurso,
+            horario: horarioCurso,
+            nivel: nivel,
+          }),
+        });
+
+        setEditingCursoId(null);
+      } else {
+        await fetch("http://localhost:3000/cursos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            titulo: tituloCurso,
+            modalidade: modalidadeCurso,
+            descricao: descricaoCurso,
+            duracao: duracaoCurso,
+            horario: horarioCurso,
+            nivel: nivel,
+          }),
+        });
+      }
+
+      await fetchCursos();
+
+      setTituloCurso("");
+      setModalidadeCurso("");
+      setDescricaoCurso("");
+      setDuracaoCurso("");
+      setHorarioCurso("");
+      setNivel("Técnico");
+
+    }catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCurso = async (id: number) => {
+    try {
+      await fetch(`http://localhost:3000/cursos/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
+      await fetchCursos();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEditCurso = (curso: Curso) => {
+    setTituloCurso(curso.titulo);
+    setModalidadeCurso(curso.modalidade);
+    setDescricaoCurso(curso.descricao);
+    setDuracaoCurso(curso.duracao);
+    setHorarioCurso(curso.horario);
+    setNivel(curso.nivel);
+
+    setEditingCursoId(curso.id);
+  }
 
   const handleEdit = (aviso: Aviso) => {
     setTitle(aviso.title);
@@ -299,10 +408,107 @@ export function AdminPage() {
 
           {section === "cursos" && (
             <div className="bg-white p-8 rounded-xl shadow border">
-              <h2 className="text-2xl font-bold">Cursos</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
+
+              <h2 className="text-2xl font-bold mb-4">
+                Cursos
+              </h2>
+
+              <input
+                type="text"
+                placeholder="Título"
+                value={tituloCurso}
+                onChange={(e) => setTituloCurso(e.target.value)}
+                className="border p-2 rounded w-full mb-2"
+              />
+
+              <input
+                type="text"
+                placeholder="Modalidade"
+                value={modalidadeCurso}
+                onChange={(e) => setModalidadeCurso(e.target.value)}
+                className="border p-2 rounded w-full mb-2"
+              />
+
+              <textarea
+                placeholder="Descrição"
+                value={descricaoCurso}
+                onChange={(e) => setDescricaoCurso(e.target.value)}
+                className="border p-2 rounded w-full mb-2"
+              />
+
+              <input
+                type="text"
+                placeholder="Duração"
+                value={duracaoCurso}
+                onChange={(e) => setDuracaoCurso(e.target.value)}
+                className="border p-2 rounded w-full mb-2"
+              />
+
+              <input
+                type="text"
+                placeholder="Horário"
+                value={horarioCurso}
+                onChange={(e) => setHorarioCurso(e.target.value)}
+                className="border p-2 rounded w-full mb-4"
+              />
+
+              <div>
+                <label className="block mb-1 font-medium">
+                  Nível
+                </label>
+
+                <select
+                  value={nivel}
+                  onChange={(e) => setNivel(e.target.value)}
+                  className="w-full border rounded-lg p-2"
+                >
+                  <option value="Técnico">Técnico</option>
+                  <option value="Superior">Superior</option>
+                </select>
+              </div>
+
+              <button
+                onClick={handleCreateCurso}
+                className="bg-green-600 text-white px-4 py-2 rounded"
+              >
+                Cadastrar Curso
+              </button>
+
+              <div className="mt-6">
+                {cursos.map((curso) => (
+                  <div
+                    key={curso.id}
+                    className="border rounded p-3 mb-3"
+                  >
+                    <h3 className="font-bold">
+                      {curso.titulo}
+                    </h3>
+
+                    <p>{curso.modalidade}</p>
+                    <p>{curso.descricao}</p>
+                    <p>{curso.duracao}</p>
+                    <p>{curso.horario}</p>
+                    <p>{curso.nivel}</p>
+
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={() => handleEditCurso(curso)}
+                        className="bg-blue-600 text-white px-3 py-1 rounded"
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteCurso(curso.id)}
+                        className="bg-red-600 text-white px-3 py-1 rounded"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                ))};
+              </div>
+
             </div>
           )}
 

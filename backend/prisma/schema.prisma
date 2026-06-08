@@ -15,11 +15,13 @@ model Aviso {
 }
 
 model Usuario {
-  id Int @id @default(autoincrement())
-  nome String
-  email String @unique
-  senha String
-  createdAt DateTime @default(now())
+  id        Int       @id @default(autoincrement())
+  nome      String
+  email     String    @unique
+  senha     String
+  createdAt DateTime  @default(now())
+}
+
 model Edital {
   id          Int    @id @default(autoincrement())
   titulo      String
@@ -27,4 +29,15 @@ model Edital {
   data        String
   status      String
   link        String
+}
+
+model Curso {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  modalidade  String
+  descricao   String
+  duracao     String
+  horario     String
+  nivel       String   @default("Técnico")
+  createdAt   DateTime @default(now())
 }

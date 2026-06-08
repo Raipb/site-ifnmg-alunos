@@ -1,94 +1,38 @@
-import { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { BookOpen, Clock, Award, Search } from 'lucide-react';
+
+interface Curso {
+  id: number;
+  titulo: string;
+  modalidade: string;
+  descricao: string;
+  duracao: string;
+  horario: string;
+}
 
 export function CursosPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todos');
 
-  const cursos = [
-    {
-      nome: 'Técnico em Administração Integrado ao Ensino Médio',
-      modalidade: 'Presencial',
-      duracao: '3 anos',
-      turno: 'Integral – matutino e vespertino',
-      descricao: 'O curso Técnico em Administração integrado ao Ensino Médio forma alunos críticos e participativos, preparados para aplicar conhecimentos de gestão e contribuir com a sociedade e o mercado de trabalho.',
-      nivel: 'Técnico',
-    },
-    {
-      nome: 'Técnico em Zootecnia Integrado ao Ensino Médio',
-      modalidade: 'Presencial',
-      duracao: '3 anos',
-      turno: 'Integral – matutino e vespertino',
-      descricao: 'Profissional capacitado para atuar na produção agrícola e animal, com foco em manejo, sustentabilidade e gestão rural.',
-      nivel: 'Técnico',
-    },
-    {
-      nome: 'Técnico em Agropecuária',
-      modalidade: 'Presencial Integrado ao Ensino Médio em Regime de Alternância',
-      duracao: '3 anos',
-      turno: 'Integral',
-      descricao: 'O curso Técnico em Agropecuária forma profissionais capazes de atuar na produção vegetal e animal, manejo do solo e gestão rural, integrando teoria e prática com foco no desenvolvimento sustentável.',
-      nivel: 'Técnico',
-    },
-    {
-      nome: 'Técnico em Informática Integrado ao Ensino Médio',
-      modalidade: 'Presencial',
-      duracao: '3 anos',
-      turno: 'Integrado',
-      descricao: 'O curso Técnico em Informática forma profissionais capazes de aplicar conhecimentos teóricos e práticos em tecnologia, contribuindo para o mercado de trabalho e a sociedade.',
-      nivel: 'Técnico',
-    },
-    {
-      nome: 'Técnico em Zootecnia Integrado ao Ensino Médio',
-      modalidade: 'Presencial',
-      duracao: '3 anos',
-      turno: 'Integral – matutino e vespertino',
-      descricao: 'O curso Técnico em Zootecnia forma profissionais capacitados para atuar na produção animal, com foco em técnicas modernas e desenvolvimento sustentável.',
-      nivel: 'Técnico',
-    },
-    {
-      nome: 'Técnico em Enfermagem Subsequente',
-      modalidade: 'Presencial',
-      duracao: '2 anos',
-      turno: 'Noturno',
-      descricao: 'Forma profissionais para atuar no cuidado à saúde com ética e qualidade.',
-      nivel: 'Superior',
-    },
-    {
-      nome: 'Bacharelado em Engenharia Agronômica',
-      modalidade: 'Presencial',
-      duracao: '10 semestres',
-      turno: 'Integral',
-      descricao: 'O curso de Engenharia Agronômica forma profissionais capazes de atuar no manejo do solo, produção agrícola e gestão rural, com foco no desenvolvimento sustentável.',
-      nivel: 'Superior',
-    },
-    {
-      nome: 'Tecnólogo em Análise e Desenvolvimento de Sistemas',
-      modalidade: 'Presencial',
-      duracao: '3 anos',
-      turno: 'Noturno',
-      descricao: 'O curso de Análise e Desenvolvimento de Sistemas forma profissionais capacitados para desenvolver e implantar soluções computacionais, atuando em diversas áreas da tecnologia.',
-      nivel: 'Superior',
-    },
-    {
-      nome: 'Superior de Tecnologia em Processos Gerenciais',
-      modalidade: 'Presencial',
-      duracao: '2 anos e meio ',
-      turno: 'Noturno',
-      descricao: 'O curso de Processos Gerenciais forma profissionais preparados para atuar na gestão de empresas, com foco prático em administração e tomada de decisões no mercado.',
-      nivel: 'Superior',
-    },
-  ];
+  const[cursos, setCursos] = useState<Curso[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/cursos")
+      .then((res) => res.json())
+      .then((data) => setCursos(data))
+      .catch((err) => console.log(err));
+  }, []);
 
   const niveis = ['Todos', 'Técnico', 'Superior'];
 
   const filteredCursos = cursos.filter((curso) => {
-    const matchesFilter = selectedFilter === 'Todos' || curso.nivel === selectedFilter;
-    const matchesSearch = curso.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          curso.descricao.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
+    const matchesSearch =
+      curso.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      curso.descricao.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesSearch;
   });
 
   return (
@@ -130,7 +74,7 @@ export function CursosPage() {
               <div>
                 <div className="flex items-start gap-2 mb-2">
                   <BookOpen className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
-                  <h3>{curso.nome}</h3>
+                  <h3>{curso.titulo}</h3>
                 </div>
                 <span className="inline-block px-3 py-1 bg-[#2E7D32]/10 text-[#2E7D32] rounded-full text-sm">
                   {curso.modalidade}
@@ -146,7 +90,7 @@ export function CursosPage() {
                 </div>
                 <div className="flex items-center gap-1">
                   <Award size={16} className="text-gray-400" />
-                  <span>{curso.turno}</span>
+                  <span>{curso.horario}</span>
                 </div>
               </div>
             </div>
