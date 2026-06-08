@@ -41,3 +41,16 @@ model Curso {
   nivel       String   @default("Técnico")
   createdAt   DateTime @default(now())
 }
+
+model Contato {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  funcao    String
+  horario   String
+  email     String
+  telefone  String
+  categoria String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

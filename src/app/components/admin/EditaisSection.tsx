@@ -106,10 +106,6 @@ export function EditaisSection() {
         <div>
             <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="text-xl font-semibold">
-                        Gerenciamento de Editais
-                    </h2>
-
                     <p className="text-gray-500 text-sm">
                         Cadastre e mantenha os editais do sistema.
                     </p>

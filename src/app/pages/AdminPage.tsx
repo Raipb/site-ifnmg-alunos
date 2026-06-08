@@ -1,7 +1,9 @@
-import { BookOpen, FileText, Folder, Megaphone, Menu, Users, Wallet, X } from "lucide-react";
+import { BookOpen, CalendarDays, FileText, Folder, Megaphone, Menu, Users, Wallet, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EditaisSection } from "../components/admin/EditaisSection";
 import { AvisosSection } from "../components/admin/AvisosSection";
+import { HorariosSection } from "../components/admin/HorarioSection";
+import { ContatosSection } from "../components/admin/ContatosSection";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -20,6 +22,16 @@ interface Curso {
   duracao: string;
   horario: string;
   nivel: string;
+}
+
+interface Contato {
+  id: number;
+  nome: string;
+  funcao: string;
+  horario: string;
+  email: string;
+  telefone: string;
+  categoria: string;
 }
 
 export function AdminPage() {
@@ -42,6 +54,16 @@ export function AdminPage() {
   const [nivel, setNivel] = useState("Técnico");
 
   const [editingCursoId, setEditingCursoId] = useState<number | null>(null);
+  const [contatos, setContatos] = useState<Contato[]>([]);
+
+  const [nome, setNome] = useState("");
+  const [funcao, setFuncao] = useState("");
+  const [horario, setHorario] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [categoria, setCategoria] = useState("");
+
+  const [editingContatoId, setEditingContatoId] = useState<number | null>(null);
 
   const fetchAvisos =  async () => {
     const response = await fetch("http://localhost:3000/avisos");
@@ -55,11 +77,18 @@ export function AdminPage() {
     const data = await response.json();
 
     setCursos(data);
+  const fetchContatos = async () => {
+    const response = await fetch("http://localhost:3000/contatos");
+
+    const data = await response.json();
+
+    setContatos(data);
   };
 
   useEffect(() => {
     fetchAvisos();
     fetchCursos();
+    fetchContatos();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -225,21 +254,89 @@ export function AdminPage() {
     setShowForm(true);
   };
 
+  const handleDeleteContato = async (id: number) => {
+    try {
+      await fetch(`http://localhost:3000/contatos/${id}`, {
+        method: "DELETE",
+      });
+
+      await fetchContatos();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEditContato = (contato: Contato) => {
+    setNome(contato.nome);
+    setFuncao(contato.funcao);
+    setHorario(contato.horario);
+    setEmail(contato.email);
+    setTelefone(contato.telefone);
+    setCategoria(contato.categoria);
+
+    setEditingContatoId(contato.id);
+    setShowForm(true);
+  };
+
+  const handleCreateContato = async () => {
+    try {
+      const body = {
+        nome,
+        funcao,
+        horario,
+        email,
+        telefone,
+        categoria,
+      };
+
+      if (editingContatoId) {
+        await fetch(`http://localhost:3000/contatos/${editingContatoId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+      } else {
+        await fetch("http://localhost:3000/contatos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+      }
+
+      setNome("");
+      setFuncao("");
+      setHorario("");
+      setEmail("");
+      setTelefone("");
+      setCategoria("");
+
+      setEditingContatoId(null);
+      setShowForm(false);
+
+      await fetchContatos();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="grid md:grid-cols-[250px_1fr] gap-6">
         <aside className="hidden md:block bg-white rounded-xl shadow border p-4 h-fit sticky top-24">
-          <h2 className="font-bold text-lg text-green-700 mb-6">
-            Admin IFNMG
-          </h2>
+          <h2 className="font-bold text-lg text-green-700 mb-6">Admin IFNMG</h2>
 
           <nav className="space-y-2">
             <button
               onClick={() => setSection("avisos")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "avisos"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "avisos"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <Megaphone size={18} />
               Avisos
@@ -247,10 +344,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("cursos")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "cursos"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "cursos"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <BookOpen size={18} />
               Cursos
@@ -258,10 +356,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("contatos")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "contatos"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "contatos"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <Users size={18} />
               Contatos
@@ -269,10 +368,11 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("bolsas")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "bolsas"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "bolsas"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <Wallet size={18} />
               Bolsas
@@ -280,24 +380,26 @@ export function AdminPage() {
 
             <button
               onClick={() => setSection("editais")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "editais"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "editais"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
               <FileText size={18} />
               Editais
             </button>
 
             <button
-              onClick={() => setSection("pdfs")}
-              className={`w-full flex items-center gap-3 p-3 rounded-lg ${section === "pdfs"
-                ? "bg-green-50 text-green-700"
-                : "hover:bg-gray-100"
-                }`}
+              onClick={() => setSection("horarios")}
+              className={`w-full flex items-center gap-3 p-3 rounded-lg ${
+                section === "horarios"
+                  ? "bg-green-50 text-green-700"
+                  : "hover:bg-gray-100"
+              }`}
             >
-              <Folder size={18} />
-              PDFs
+              <CalendarDays size={18} />
+              Horários
             </button>
           </nav>
         </aside>
@@ -314,7 +416,6 @@ export function AdminPage() {
           {menuOpen && (
             <div className="mt-3 bg-white rounded-xl shadow border p-3">
               <div className="flex flex-col gap-2">
-
                 <button
                   onClick={() => {
                     setSection("avisos");
@@ -374,7 +475,6 @@ export function AdminPage() {
                 >
                   PDFs
                 </button>
-
               </div>
             </div>
           )}
@@ -387,7 +487,7 @@ export function AdminPage() {
             {section === "contatos" && "Gerenciamento de Contatos"}
             {section === "bolsas" && "Gerenciamento de Bolsas"}
             {section === "editais" && "Gerenciamento de Editais"}
-            {section === "pdfs" && "Gerenciamento de PDFs"}
+            {section === "horarios" && "Gerenciamento de Horários e Calendário"}
           </h1>
           {section === "avisos" && (
             <AvisosSection
@@ -509,40 +609,48 @@ export function AdminPage() {
                 ))};
               </div>
 
+              <h2 className="text-2xl font-bold">Cursos</h2>
+              <p className="text-gray-500 mt-2">Área em desenvolvimento.</p>
             </div>
           )}
 
           {section === "contatos" && (
-            <div className="bg-white p-8 rounded-xl shadow border">
-              <h2 className="text-2xl font-bold">Contatos</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
-            </div>
+            <ContatosSection
+              contatos={contatos}
+              nome={nome}
+              funcao={funcao}
+              horario={horario}
+              email={email}
+              telefone={telefone}
+              categoria={categoria}
+              showForm={showForm}
+              editingId={editingContatoId}
+              setNome={setNome}
+              setFuncao={setFuncao}
+              setHorario={setHorario}
+              setEmail={setEmail}
+              setTelefone={setTelefone}
+              setCategoria={setCategoria}
+              setShowForm={setShowForm}
+              setEditingId={setEditingContatoId}
+              handleCreate={handleCreateContato}
+              handleEdit={handleEditContato}
+              handleDelete={handleDeleteContato}
+            />
           )}
 
           {section === "bolsas" && (
             <div className="bg-white p-8 rounded-xl shadow border">
               <h2 className="text-2xl font-bold">Bolsas</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
+              <p className="text-gray-500 mt-2">Área em desenvolvimento.</p>
             </div>
           )}
 
           {section === "editais" && <EditaisSection />}
 
-          {section === "pdfs" && (
-            <div className="bg-white p-8 rounded-xl shadow border">
-              <h2 className="text-2xl font-bold">PDFs</h2>
-              <p className="text-gray-500 mt-2">
-                Área em desenvolvimento.
-              </p>
-            </div>
-          )}
+          {section === "horarios" && <HorariosSection />}
         </main>
-
       </div>
     </div>
   );
-}
+}}
