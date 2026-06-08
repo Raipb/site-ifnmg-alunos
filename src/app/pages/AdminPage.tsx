@@ -35,6 +35,7 @@ interface Contato {
 }
 
 export function AdminPage() {
+  console.log("AdminPage renderizou");
   const [avisos, setAvisos] = useState<Aviso[]>([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -77,6 +78,8 @@ export function AdminPage() {
     const data = await response.json();
 
     setCursos(data);
+  }
+
   const fetchContatos = async () => {
     const response = await fetch("http://localhost:3000/contatos");
 
@@ -606,7 +609,7 @@ export function AdminPage() {
                       </button>
                     </div>
                   </div>
-                ))};
+                ))}
               </div>
 
               <h2 className="text-2xl font-bold">Cursos</h2>
@@ -653,4 +656,4 @@ export function AdminPage() {
       </div>
     </div>
   );
-}}
+}
