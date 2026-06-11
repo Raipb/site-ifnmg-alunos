@@ -1,82 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { Wallet, ExternalLink, DollarSign, Users, Search } from 'lucide-react';
 
+interface Bolsa {
+  id: number;
+  nome: string;
+  descricao: string;
+  valor: string;
+  requisitos: string;
+  tipo: string;
+  link: string;
+}
+
 export function BolsasPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todos');
+  const [bolsas, setBolsas] = useState<Bolsa[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const bolsas = [
-    {
-      nome: 'Auxílio Alimentação',
-      descricao: 'Auxílio financeiro para refeições no campus',
-      valor: 'R$ 300,00/mês',
-      requisitos: 'Comprovação de baixa renda familiar',
-      tipo: 'Assistência',
-    },
-    {
-      nome: 'Auxílio Transporte',
-      descricao: 'Suporte para despesas com deslocamento',
-      valor: 'R$ 150,00/mês',
-      requisitos: 'Residir a mais de 2km do campus',
-      tipo: 'Assistência',
-    },
-    {
-      nome: 'Bolsa de Monitoria',
-      descricao: 'Acompanhamento de disciplinas e auxílio a estudantes',
-      valor: 'R$ 400,00/mês',
-      requisitos: 'Média acima de 7.0 na disciplina',
-      tipo: 'Acadêmica',
-    },
-    {
-      nome: 'Bolsa PIBIC',
-      descricao: 'Programa de Iniciação Científica',
-      valor: 'R$ 700,00/mês',
-      requisitos: 'Aprovação em edital de pesquisa',
-      tipo: 'Pesquisa',
-    },
-    {
-      nome: 'Bolsa de Extensão',
-      descricao: 'Participação em projetos de extensão',
-      valor: 'R$ 400,00/mês',
-      requisitos: 'Seleção em projeto de extensão',
-      tipo: 'Extensão',
-    },
-    {
-      nome: 'Auxílio Permanência',
-      descricao: 'Apoio financeiro para manutenção no curso',
-      valor: 'R$ 500,00/mês',
-      requisitos: 'Vulnerabilidade socioeconômica comprovada',
-      tipo: 'Assistência',
-    },
-  ];
-
-  const getTipoIcon = (tipo: string) => {
-    switch (tipo) {
-      case 'Assistência':
-        return Users;
-      case 'Acadêmica':
-      case 'Pesquisa':
-      case 'Extensão':
-        return Wallet;
-      default:
-        return Wallet;
-    }
-  };
+  useEffect(() => {
+    fetch("http://localhost:3000/bolsas")
+      .then((res) => res.json())
+      .then((data) => setBolsas(Array.isArray(data) ? data : []))
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const getTipoColor = (tipo: string) => {
     switch (tipo) {
-      case 'Assistência':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
-      case 'Acadêmica':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
-      case 'Pesquisa':
-        return 'bg-green-50 text-green-700 border-green-200';
-      case 'Extensão':
-        return 'bg-orange-50 text-orange-700 border-orange-200';
-      default:
-        return 'bg-gray-50 text-gray-700 border-gray-200';
+      case 'Assistência': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'Acadêmica': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'Pesquisa': return 'bg-green-50 text-green-700 border-green-200';
+      case 'Extensão': return 'bg-orange-50 text-orange-700 border-orange-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   };
 
@@ -84,8 +41,9 @@ export function BolsasPage() {
 
   const filteredBolsas = bolsas.filter((bolsa) => {
     const matchesFilter = selectedFilter === 'Todos' || bolsa.tipo === selectedFilter;
-    const matchesSearch = bolsa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          bolsa.descricao.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      bolsa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bolsa.descricao.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -98,7 +56,8 @@ export function BolsasPage() {
             <div>
               <h3 className="mb-2">Programas de Bolsas e Auxílios</h3>
               <p className="text-sm text-gray-700">
-                O IFNMG oferece diversos programas de apoio financeiro aos estudantes. Verifique os requisitos e prazos na Assistência Estudantil.
+                O IFNMG oferece diversos programas de apoio financeiro aos estudantes.
+                Verifique os requisitos e entre em contato com a Assistência Estudantil para mais informações.
               </p>
             </div>
           </div>
@@ -129,25 +88,27 @@ export function BolsasPage() {
         </div>
 
         <div className="space-y-3">
-          {filteredBolsas.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-8 text-gray-400 text-sm">
+              Carregando bolsas...
+            </div>
+          ) : filteredBolsas.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <p>Nenhuma bolsa encontrada</p>
             </div>
           ) : (
-            filteredBolsas.map((bolsa, index) => {
-            const Icon = getTipoIcon(bolsa.tipo);
-            return (
-              <Card key={index}>
+            filteredBolsas.map((bolsa) => (
+              <Card key={bolsa.id}>
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-2 flex-1">
-                      <Icon className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
+                      <Users className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
                       <div>
                         <h3 className="mb-1">{bolsa.nome}</h3>
                         <p className="text-sm text-gray-600">{bolsa.descricao}</p>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs border ${getTipoColor(bolsa.tipo)}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs border flex-shrink-0 ${getTipoColor(bolsa.tipo)}`}>
                       {bolsa.tipo}
                     </span>
                   </div>
@@ -162,17 +123,20 @@ export function BolsasPage() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => {}}
-                    className="w-full mt-2 py-2 text-sm text-[#2E7D32] hover:bg-[#2E7D32]/5 rounded-lg transition-colors flex items-center justify-center gap-1"
-                  >
-                    Saiba mais
-                    <ExternalLink size={14} />
-                  </button>
+                  {bolsa.link && (
+                    <a
+                      href={bolsa.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full mt-2 py-2 text-sm text-[#2E7D32] hover:bg-[#2E7D32]/5 rounded-lg transition-colors flex items-center justify-center gap-1"
+                    >
+                      Saiba mais
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
                 </div>
               </Card>
-            );
-            })
+            ))
           )}
         </div>
       </div>

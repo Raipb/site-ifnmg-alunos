@@ -54,3 +54,15 @@ model Contato {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Bolsa {
+  id         Int      @id @default(autoincrement())
+  nome       String
+  descricao  String
+  valor      String
+  requisitos String
+  tipo       String
+  link       String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

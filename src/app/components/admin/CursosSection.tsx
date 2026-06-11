@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface Curso {
   id: number;
   titulo: string;
@@ -40,14 +38,12 @@ interface CursosSectionProps {
 
 export function CursosSection({
   cursos,
-
   tituloCurso,
   modalidadeCurso,
   descricaoCurso,
   duracaoCurso,
   horarioCurso,
   nivel,
-
   showForm,
   editingId,
 
@@ -57,7 +53,6 @@ export function CursosSection({
   setDuracaoCurso,
   setHorarioCurso,
   setNivel,
-
   setShowForm,
   setEditingId,
 

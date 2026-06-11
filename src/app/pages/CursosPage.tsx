@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { BookOpen, Clock, Award, Search } from 'lucide-react';
@@ -10,29 +10,29 @@ interface Curso {
   descricao: string;
   duracao: string;
   horario: string;
+  nivel: string;
 }
 
 export function CursosPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todos');
-
-  const[cursos, setCursos] = useState<Curso[]>([]);
+  const [cursos, setCursos] = useState<Curso[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:3000/cursos")
       .then((res) => res.json())
-      .then((data) => setCursos(data))
+      .then((data) => setCursos(Array.isArray(data) ? data : []))
       .catch((err) => console.log(err));
   }, []);
 
   const niveis = ['Todos', 'Técnico', 'Superior'];
 
   const filteredCursos = cursos.filter((curso) => {
+    const matchesFilter = selectedFilter === 'Todos' || curso.nivel === selectedFilter;
     const matchesSearch =
       curso.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       curso.descricao.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesSearch;
+    return matchesFilter && matchesSearch;
   });
 
   return (
@@ -68,33 +68,41 @@ export function CursosPage() {
               <p>Nenhum curso encontrado</p>
             </div>
           ) : (
-            filteredCursos.map((curso, index) => (
-          <Card key={index}>
-            <div className="space-y-3">
-              <div>
-                <div className="flex items-start gap-2 mb-2">
-                  <BookOpen className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
-                  <h3>{curso.titulo}</h3>
-                </div>
-                <span className="inline-block px-3 py-1 bg-[#2E7D32]/10 text-[#2E7D32] rounded-full text-sm">
-                  {curso.modalidade}
-                </span>
-              </div>
+            filteredCursos.map((curso) => (
+              <Card key={curso.id}>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex items-start gap-2 mb-2">
+                      <BookOpen className="text-[#2E7D32] flex-shrink-0 mt-1" size={20} />
+                      <h3>{curso.titulo}</h3>
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <span className="inline-block px-3 py-1 bg-[#2E7D32]/10 text-[#2E7D32] rounded-full text-sm">
+                        {curso.modalidade}
+                      </span>
+                      <span className={`inline-block px-3 py-1 rounded-full text-sm ${curso.nivel === 'Superior'
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'bg-green-50 text-green-700'
+                        }`}>
+                        {curso.nivel}
+                      </span>
+                    </div>
+                  </div>
 
-              <p className="text-sm text-gray-700">{curso.descricao}</p>
+                  <p className="text-sm text-gray-700">{curso.descricao}</p>
 
-              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <Clock size={16} className="text-gray-400" />
-                  <span>{curso.duracao}</span>
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <Clock size={16} className="text-gray-400" />
+                      <span>{curso.duracao}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Award size={16} className="text-gray-400" />
+                      <span>{curso.horario}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Award size={16} className="text-gray-400" />
-                  <span>{curso.horario}</span>
-                </div>
-              </div>
-            </div>
-          </Card>
+              </Card>
             ))
           )}
         </div>
