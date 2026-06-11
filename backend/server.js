@@ -9,6 +9,7 @@ const editaisRoutes = require("./Routes/editais");
 const cursosRoutes = require("./Routes/cursos");
 const horariosRoutes = require("./Routes/horarios");
 const contatoRoutes = require("./Routes/contatos");
+const bolsasRoutes = require("./Routes/bolsas");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/cursos", cursosRoutes);
 app.use("/horarios", horariosRoutes);
 app.use("/auth", authRoutes);
 app.use("/contatos", contatoRoutes);
+app.use("/bolsas", bolsasRoutes);
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
