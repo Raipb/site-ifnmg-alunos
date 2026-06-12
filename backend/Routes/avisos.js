@@ -1,64 +1,55 @@
 const express = require("express");
 const router = express.Router();
+const { PrismaClient } = require("@prisma/client");
 const authMiddleware = require("../middleware/authMiddleware");
 
-const avisos = require("../data/avisos");
+const prisma = new PrismaClient();
 
-router.get("/", (req, res) => {
-  res.json(avisos);
-});
-
-router.delete("/:id", authMiddleware, (req, res) => {
-  const id = Number(req.params.id);
-
-  const index = avisos.findIndex((aviso) => aviso.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      error: "Aviso não encontrado",
-    });
+router.get("/", async (req, res) => {
+  try {
+    const avisos = await prisma.aviso.findMany();
+    res.json(avisos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao buscar avisos" });
   }
-
-  avisos.splice(index, 1);
-
-  res.json({
-    message: "Aviso removido com sucesso",
-  });
 });
 
-router.post("/", authMiddleware, (req, res) => {
-  const { title, description, type } = req.body;
-
-  const novoAviso = {
-    id: Date.now(),
-    title,
-    description,
-    type,
-  };
-
-  avisos.push(novoAviso);
-
-  res.status(201).json(novoAviso);
-});
-
-router.put("/:id", authMiddleware, (req, res) => {
-  const id = Number(req.params.id);
-
-  const { title, description, type } = req.body;
-
-  const aviso = avisos.find((aviso) => aviso.id === id);
-
-  if (!aviso) {
-    return res.status(404).json({
-      error: "Aviso não encontrado",
+router.post("/", authMiddleware, async (req, res) => {
+  try {
+    const { title, description, type } = req.body;
+    const aviso = await prisma.aviso.create({
+      data: { title, description, type },
     });
+    res.status(201).json(aviso);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao criar aviso" });
   }
+});
 
-  aviso.title = title;
-  aviso.description = description;
-  aviso.type = type;
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { title, description, type } = req.body;
+    const aviso = await prisma.aviso.update({
+      where: { id },
+      data: { title, description, type },
+    });
+    res.json(aviso);
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao atualizar aviso" });
+  }
+});
 
-  res.json(aviso);
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await prisma.aviso.delete({ where: { id } });
+    res.json({ message: "Aviso removido com sucesso" });
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao remover aviso" });
+  }
 });
 
 module.exports = router;
