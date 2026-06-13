@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../components/Card';
 import { Clock, Calendar, ExternalLink, FileText } from 'lucide-react';
+import API_URL from '../../config';
 
 interface Horario {
   id: number;
@@ -16,7 +17,7 @@ export function HorariosPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("${API_URL}/horarios")
+    fetch(`${API_URL}/horarios`)
       .then((res) => res.json())
       .then((data) => setDocumentos(data))
       .catch(() => setDocumentos([]))

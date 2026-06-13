@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { FileText, ExternalLink, Calendar, Search } from 'lucide-react';
+import API_URL from "../../config";
 
 interface Edital {
   id: number;
@@ -18,7 +19,7 @@ export function EditaisPage() {
   const [editais, setEditais] = useState<Edital[]>([]);
 
   useEffect(() => {
-    fetch("${API_URL}/editais")
+    fetch(`${API_URL}/editais`)
       .then((res) => res.json())
       .then((data) => setEditais(data))
       .catch((error) => console.error(error));

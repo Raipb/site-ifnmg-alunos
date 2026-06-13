@@ -22,7 +22,7 @@ export function HorariosSection() {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        fetch("${API_URL}/horarios")
+        fetch(`${API_URL}/horarios`)
             .then((res) => res.json())
             .then((data) => setHorarios(data));
     }, []);
@@ -56,7 +56,7 @@ export function HorariosSection() {
                 prev.map((h) => (h.id === editingId ? atualizado : h))
             );
         } else {
-            const response = await fetch("${API_URL}/horarios", {
+            const response = await fetch(`${API_URL}/horarios`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),

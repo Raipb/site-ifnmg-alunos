@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { Wallet, ExternalLink, DollarSign, Users, Search } from 'lucide-react';
+import API_URL from '../../config';
 
 interface Bolsa {
   id: number;
@@ -20,7 +21,7 @@ export function BolsasPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("${API_URL}/bolsas")
+    fetch(`${API_URL}/bolsas`)
       .then((res) => res.json())
       .then((data) => setBolsas(Array.isArray(data) ? data : []))
       .catch((err) => console.log(err))

@@ -93,23 +93,23 @@ export function AdminPage() {
 
   // — Fetches —
   const fetchAvisos = async () => {
-    const data = await fetch("${API_URL}/avisos").then(r => r.json());
+    const data = await fetch(`${API_URL}/avisos`).then(r => r.json());
     setAvisos(data);
   };
 
   const fetchCursos = async () => {
-    const data = await fetch("${API_URL}/cursos").then(r => r.json());
+    const data = await fetch(`${API_URL}/cursos`).then(r => r.json());
     console.log("cursos recebidos:", data);
     setCursos(Array.isArray(data) ? data : []);
   };
 
   const fetchContatos = async () => {
-    const data = await fetch("${API_URL}/contatos").then(r => r.json());
+    const data = await fetch(`${API_URL}/contatos`).then(r => r.json());
     setContatos(data);
   };
 
   const fetchBolsas = async () => {
-    const data = await fetch("${API_URL}/bolsas").then(r => r.json());
+    const data = await fetch(`${API_URL}/bolsas`).then(r => r.json());
     console.log("bolsas recebidas:", data);
     setBolsas(Array.isArray(data) ? data : []);
   };
@@ -134,7 +134,7 @@ export function AdminPage() {
         });
         setEditingAvisoId(null);
       } else {
-        await fetch("${API_URL}/avisos", {
+        await fetch(`${API_URL}/avisos`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ title, description, type: "info" }),
@@ -169,7 +169,7 @@ export function AdminPage() {
         });
         setEditingCursoId(null);
       } else {
-        await fetch("${API_URL}/cursos", {
+        await fetch(`${API_URL}/cursos`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
           body: JSON.stringify({ titulo: tituloCurso, modalidade: modalidadeCurso, descricao: descricaoCurso, duracao: duracaoCurso, horario: horarioCurso, nivel }),
@@ -208,7 +208,7 @@ export function AdminPage() {
           body: JSON.stringify(body),
         });
       } else {
-        await fetch("${API_URL}/contatos", {
+        await fetch(`${API_URL}/contatos`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -247,7 +247,7 @@ export function AdminPage() {
         });
         setEditingBolsaId(null);
       } else {
-        await fetch("${API_URL}/bolsas", {
+        await fetch(`${API_URL}/bolsas`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify(body),

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { BookOpen, Clock, Award, Search } from 'lucide-react';
+import API_URL from '../../config';
 
 interface Curso {
   id: number;
@@ -19,7 +20,7 @@ export function CursosPage() {
   const [cursos, setCursos] = useState<Curso[]>([]);
 
   useEffect(() => {
-    fetch("${API_URL}/cursos")
+    fetch(`${API_URL}/cursos`)
       .then((res) => res.json())
       .then((data) => setCursos(Array.isArray(data) ? data : []))
       .catch((err) => console.log(err));

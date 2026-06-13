@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { FilterButton } from '../components/FilterButton';
 import { Mail, Phone, Clock, Search } from 'lucide-react';
+import API_URL from '../../config';
 
 interface Contato {
   id: number;
@@ -34,7 +35,7 @@ export function ContatosPage() {
 
   const buscarContatos = async () => {
     try {
-      const response = await fetch("${API_URL}/contatos");
+      const response = await fetch(`${API_URL}/contatos`);
       const data = await response.json();
 
       setContatos(data);

@@ -23,7 +23,7 @@ export function EditaisSection() {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        fetch("${API_URL}/editais")
+        fetch(`${API_URL}/editais`)
             .then((res) => res.json())
             .then((data) => setEditais(data));
     }, []);
@@ -68,7 +68,7 @@ export function EditaisSection() {
             );
         } else {
             const response = await fetch(
-                "${API_URL}/editais",
+                `${API_URL}/editais`,
                 {
                     method: "POST",
                     headers: {

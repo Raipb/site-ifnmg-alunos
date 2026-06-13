@@ -10,6 +10,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import API_URL from "../../config";
 
 interface Aviso {
   id?: string | number;
@@ -79,7 +80,7 @@ export function HomePage({ onNavigate, onSearchOpen }: HomePageProps) {
   const [avisos, setAvisos] = useState<Aviso[]>([]);
 
   useEffect(() => {
-    fetch("${API_URL}/avisos")
+    fetch(`${API_URL}/avisos`)
       .then((res) => res.json())
       .then((data: Aviso[]) => setAvisos(data))
       .catch((err) => console.log(err));
