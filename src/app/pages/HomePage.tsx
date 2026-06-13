@@ -79,7 +79,7 @@ export function HomePage({ onNavigate, onSearchOpen }: HomePageProps) {
   const [avisos, setAvisos] = useState<Aviso[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/avisos")
+    fetch("${API_URL}/avisos")
       .then((res) => res.json())
       .then((data: Aviso[]) => setAvisos(data))
       .catch((err) => console.log(err));

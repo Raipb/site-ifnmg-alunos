@@ -16,7 +16,7 @@ export function HorariosPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/horarios")
+    fetch("${API_URL}/horarios")
       .then((res) => res.json())
       .then((data) => setDocumentos(data))
       .catch(() => setDocumentos([]))

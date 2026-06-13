@@ -6,6 +6,7 @@ import { HorariosSection } from "../components/admin/HorarioSection";
 import { ContatosSection } from "../components/admin/ContatosSection";
 import { CursosSection } from "../components/admin/CursosSection";
 import { BolsasSection } from "../components/admin/BolsasSection";
+import API_URL from "../../config";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -92,23 +93,23 @@ export function AdminPage() {
 
   // — Fetches —
   const fetchAvisos = async () => {
-    const data = await fetch("http://localhost:3000/avisos").then(r => r.json());
+    const data = await fetch("${API_URL}/avisos").then(r => r.json());
     setAvisos(data);
   };
 
   const fetchCursos = async () => {
-    const data = await fetch("http://localhost:3000/cursos").then(r => r.json());
+    const data = await fetch("${API_URL}/cursos").then(r => r.json());
     console.log("cursos recebidos:", data);
     setCursos(Array.isArray(data) ? data : []);
   };
 
   const fetchContatos = async () => {
-    const data = await fetch("http://localhost:3000/contatos").then(r => r.json());
+    const data = await fetch("${API_URL}/contatos").then(r => r.json());
     setContatos(data);
   };
 
   const fetchBolsas = async () => {
-    const data = await fetch("http://localhost:3000/bolsas").then(r => r.json());
+    const data = await fetch("${API_URL}/bolsas").then(r => r.json());
     console.log("bolsas recebidas:", data);
     setBolsas(Array.isArray(data) ? data : []);
   };
@@ -126,14 +127,14 @@ export function AdminPage() {
     if (!token || !title || !description) return;
     try {
       if (editingAvisoId !== null) {
-        await fetch(`http://localhost:3000/avisos/${editingAvisoId}`, {
+        await fetch(`${API_URL}/avisos/${editingAvisoId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ title, description, type: "info" }),
         });
         setEditingAvisoId(null);
       } else {
-        await fetch("http://localhost:3000/avisos", {
+        await fetch("${API_URL}/avisos", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ title, description, type: "info" }),
@@ -150,7 +151,7 @@ export function AdminPage() {
   };
 
   const handleDeleteAviso = async (id: number) => {
-    await fetch(`http://localhost:3000/avisos/${id}`, {
+    await fetch(`${API_URL}/avisos/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${getToken()}` },
     });
@@ -161,14 +162,14 @@ export function AdminPage() {
   const handleCreateCurso = async () => {
     try {
       if (editingCursoId !== null) {
-        await fetch(`http://localhost:3000/cursos/${editingCursoId}`, {
+        await fetch(`${API_URL}/cursos/${editingCursoId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
           body: JSON.stringify({ titulo: tituloCurso, modalidade: modalidadeCurso, descricao: descricaoCurso, duracao: duracaoCurso, horario: horarioCurso, nivel }),
         });
         setEditingCursoId(null);
       } else {
-        await fetch("http://localhost:3000/cursos", {
+        await fetch("${API_URL}/cursos", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
           body: JSON.stringify({ titulo: tituloCurso, modalidade: modalidadeCurso, descricao: descricaoCurso, duracao: duracaoCurso, horario: horarioCurso, nivel }),
@@ -189,7 +190,7 @@ export function AdminPage() {
   };
 
   const handleDeleteCurso = async (id: number) => {
-    await fetch(`http://localhost:3000/cursos/${id}`, {
+    await fetch(`${API_URL}/cursos/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${getToken()}` },
     });
@@ -201,13 +202,13 @@ export function AdminPage() {
     try {
       const body = { nome: nomeContato, funcao, horario: horarioContato, email, telefone, categoria };
       if (editingContatoId) {
-        await fetch(`http://localhost:3000/contatos/${editingContatoId}`, {
+        await fetch(`${API_URL}/contatos/${editingContatoId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
       } else {
-        await fetch("http://localhost:3000/contatos", {
+        await fetch("${API_URL}/contatos", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -228,7 +229,7 @@ export function AdminPage() {
   };
 
   const handleDeleteContato = async (id: number) => {
-    await fetch(`http://localhost:3000/contatos/${id}`, { method: "DELETE" });
+    await fetch(`${API_URL}/contatos/${id}`, { method: "DELETE" });
     await fetchContatos();
   };
 
@@ -239,14 +240,14 @@ export function AdminPage() {
     try {
       const body = { nome: nomeBolsa, descricao: descricaoBolsa, valor, requisitos, tipo: tipoBolsa, link: linkBolsa };
       if (editingBolsaId !== null) {
-        await fetch(`http://localhost:3000/bolsas/${editingBolsaId}`, {
+        await fetch(`${API_URL}/bolsas/${editingBolsaId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify(body),
         });
         setEditingBolsaId(null);
       } else {
-        await fetch("http://localhost:3000/bolsas", {
+        await fetch("${API_URL}/bolsas", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify(body),
@@ -267,7 +268,7 @@ export function AdminPage() {
   };
 
   const handleDeleteBolsa = async (id: number) => {
-    await fetch(`http://localhost:3000/bolsas/${id}`, {
+    await fetch(`${API_URL}/bolsas/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${getToken()}` },
     });

@@ -24,7 +24,7 @@ export function ContatosPage() {
   const filteredContatos = contatos.filter((contato) => {
     const matchesFilter = selectedFilter === 'Todos' || contato.categoria === selectedFilter;
     const matchesSearch = contato.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          contato.funcao.toLowerCase().includes(searchTerm.toLowerCase());
+      contato.funcao.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -34,7 +34,7 @@ export function ContatosPage() {
 
   const buscarContatos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/contatos");
+      const response = await fetch("${API_URL}/contatos");
       const data = await response.json();
 
       setContatos(data);

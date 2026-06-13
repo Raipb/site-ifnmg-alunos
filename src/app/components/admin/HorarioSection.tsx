@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_URL from "../../../config";
 
 interface Horario {
     id: number;
@@ -21,13 +22,13 @@ export function HorariosSection() {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:3000/horarios")
+        fetch("${API_URL}/horarios")
             .then((res) => res.json())
             .then((data) => setHorarios(data));
     }, []);
 
     const handleDelete = async (id: number) => {
-        await fetch(`http://localhost:3000/horarios/${id}`, {
+        await fetch(`${API_URL}/horarios/${id}`, {
             method: "DELETE",
         });
 
@@ -41,7 +42,7 @@ export function HorariosSection() {
 
         if (editingId) {
             const response = await fetch(
-                `http://localhost:3000/horarios/${editingId}`,
+                `${API_URL}/horarios/${editingId}`,
                 {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
@@ -55,7 +56,7 @@ export function HorariosSection() {
                 prev.map((h) => (h.id === editingId ? atualizado : h))
             );
         } else {
-            const response = await fetch("http://localhost:3000/horarios", {
+            const response = await fetch("${API_URL}/horarios", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),

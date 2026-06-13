@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_URL from "../../../config";
 
 interface Edital {
     id: number;
@@ -22,13 +23,13 @@ export function EditaisSection() {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:3000/editais")
+        fetch("${API_URL}/editais")
             .then((res) => res.json())
             .then((data) => setEditais(data));
     }, []);
 
     const handleDelete = async (id: number) => {
-        await fetch(`http://localhost:3000/editais/${id}`, {
+        await fetch(`${API_URL}/editais/${id}`, {
             method: "DELETE",
         });
 
@@ -48,7 +49,7 @@ export function EditaisSection() {
 
         if (editingId) {
             const response = await fetch(
-                `http://localhost:3000/editais/${editingId}`,
+                `${API_URL}/editais/${editingId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -67,7 +68,7 @@ export function EditaisSection() {
             );
         } else {
             const response = await fetch(
-                "http://localhost:3000/editais",
+                "${API_URL}/editais",
                 {
                     method: "POST",
                     headers: {

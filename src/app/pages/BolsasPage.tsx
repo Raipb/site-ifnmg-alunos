@@ -20,7 +20,7 @@ export function BolsasPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/bolsas")
+    fetch("${API_URL}/bolsas")
       .then((res) => res.json())
       .then((data) => setBolsas(Array.isArray(data) ? data : []))
       .catch((err) => console.log(err))

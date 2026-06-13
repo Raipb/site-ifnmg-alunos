@@ -19,7 +19,7 @@ export function CursosPage() {
   const [cursos, setCursos] = useState<Curso[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/cursos")
+    fetch("${API_URL}/cursos")
       .then((res) => res.json())
       .then((data) => setCursos(Array.isArray(data) ? data : []))
       .catch((err) => console.log(err));

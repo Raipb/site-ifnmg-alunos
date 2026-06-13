@@ -18,7 +18,7 @@ export function EditaisPage() {
   const [editais, setEditais] = useState<Edital[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/editais")
+    fetch("${API_URL}/editais")
       .then((res) => res.json())
       .then((data) => setEditais(data))
       .catch((error) => console.error(error));
