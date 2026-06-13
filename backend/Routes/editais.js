@@ -1,65 +1,53 @@
 const express = require("express");
 const router = express.Router();
+const { PrismaClient } = require("@prisma/client");
+const authMiddleware = require("../middleware/authMiddleware");
 
-const editais = require("../data/editais");
+const prisma = new PrismaClient();
 
-router.get("/", (req, res) => {
-    res.json(editais);
-});
-
-router.post("/", (req, res) => {
-    const { titulo, descricao, data, status, link } = req.body;
-
-    const novoEdital = {
-        id: Date.now(),
-        titulo,
-        descricao,
-        data,
-        status,
-        link,
-    };
-
-    editais.push(novoEdital);
-
-    res.status(201).json(novoEdital);
-});
-
-router.put("/:id", (req, res) => {
-    const id = Number(req.params.id);
-
-    const edital = editais.find((e) => e.id === id);
-
-    if (!edital) {
-        return res.status(404).json({
-            error: "Edital não encontrado",
-        });
+router.get("/", async (req, res) => {
+    try {
+        const editais = await prisma.edital.findMany();
+        res.json(editais);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar editais" });
     }
-
-    edital.titulo = req.body.titulo;
-    edital.descricao = req.body.descricao;
-    edital.data = req.body.data;
-    edital.status = req.body.status;
-    edital.link = req.body.link;
-
-    res.json(edital);
 });
 
-router.delete("/:id", (req, res) => {
-    const id = Number(req.params.id);
-
-    const index = editais.findIndex((e) => e.id === id);
-
-    if (index === -1) {
-        return res.status(404).json({
-            error: "Edital não encontrado",
+router.post("/", authMiddleware, async (req, res) => {
+    try {
+        const { titulo, descricao, data, status, link } = req.body;
+        const edital = await prisma.edital.create({
+            data: { titulo, descricao, data, status, link },
         });
+        res.status(201).json(edital);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao criar edital" });
     }
+});
 
-    editais.splice(index, 1);
+router.put("/:id", authMiddleware, async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const { titulo, descricao, data, status, link } = req.body;
+        const edital = await prisma.edital.update({
+            where: { id },
+            data: { titulo, descricao, data, status, link },
+        });
+        res.json(edital);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao atualizar edital" });
+    }
+});
 
-    res.json({
-        message: "Edital removido com sucesso",
-    });
+router.delete("/:id", authMiddleware, async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        await prisma.edital.delete({ where: { id } });
+        res.json({ message: "Edital removido com sucesso" });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao remover edital" });
+    }
 });
 
 module.exports = router;
